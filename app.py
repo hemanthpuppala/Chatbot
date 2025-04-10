@@ -17,9 +17,10 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains import create_retrieval_chain
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
+from langchain_community.vectorstores import FAISS
 # Initialize embeddings and Chroma
 embeddings = OllamaEmbeddings(model='mxbai-embed-large')
-chromaa = Chroma(persist_directory='./chroma_ollama', embedding_function=embeddings)
+chromaa = FAISS.load_local('faiss_ollama', embeddings,allow_dangerous_deserialization=True)
 llm = Ollama(model="qwen2.5-coder")
 
 # Define the prompt (using {question} to match ConversationalRetrievalChain)
