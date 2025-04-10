@@ -11,7 +11,6 @@ load_dotenv()
 os.environ['LANGSMITH_API_KEY'] = os.getenv('LANGSMITH_API_KEY')
 os.environ['LANGSMITH_PROJECT'] = os.getenv('LANGSMITH_PROJECT')
 os.environ['LANGSMITH_TRACING'] = "true"
-os.environ['GEMINI_API_KEY'] = os.getenv('GEMINI_API_KEY')
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains import create_retrieval_chain
