@@ -20,7 +20,7 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain_community.vectorstores import FAISS
 # Initialize embeddings and Chroma
 embeddings = OllamaEmbeddings(model='mxbai-embed-large')
-chromaa = FAISS.load_local('faiss_ollama', embeddings,allow_dangerous_deserialization=True)
+chromaa = FAISS.load_local('VectorDB', embeddings,allow_dangerous_deserialization=True)
 llm = Ollama(model="qwen2.5-coder")
 
 # Define the prompt (using {question} to match ConversationalRetrievalChain)
