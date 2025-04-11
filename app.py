@@ -17,12 +17,11 @@ from langchain.chains import create_retrieval_chain
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from langchain_community.vectorstores import FAISS
-# Initialize embeddings and Chroma
 embeddings = OllamaEmbeddings(model='mxbai-embed-large')
 chromaa = FAISS.load_local('VectorDB', embeddings,allow_dangerous_deserialization=True)
 llm = Ollama(model="qwen2.5-coder")
 
-# Define the prompt (using {question} to match ConversationalRetrievalChain)
+#prompt using {question} to match ConversationalRetrievalChain
 prompt = ChatPromptTemplate.from_messages([
     (
         "system",
@@ -41,7 +40,7 @@ discourage redundant greetings, unless it's clearly the start of a conversation.
 Be concise, clear, and witty where appropriate. You're allowed to have personality — just don't make stuff up.
 """
     ),
-    ("human", "{question}")  # Ensure this matches the input key,
+    ("human", "{question}") 
 ])
 
 # Initialize memory
@@ -51,19 +50,19 @@ if "memory" not in st.session_state:
         return_messages=True
     )
 
-# Set up the retriever
+# retriever
 retriever = chromaa.as_retriever()
 
-# Create the conversational retrieval chain with memory
+# conversational retrieval chain with memory
 from langchain.chains import ConversationalRetrievalChain
 
-# Initialize the conversational chain with memory
+# conversational chain with memory
 if "ret_chain" not in st.session_state:
     st.session_state.ret_chain = ConversationalRetrievalChain.from_llm(
         llm=llm,
         retriever=retriever,
         memory=st.session_state.memory,
-        combine_docs_chain_kwargs={"prompt": prompt},  # Pass the prompt here
+        combine_docs_chain_kwargs={"prompt": prompt},  
     )
 print(st.session_state.ret_chain.input_keys)
 
@@ -79,23 +78,23 @@ for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# Get user input
+#  input
 inp = st.chat_input("Enter your message...")
 
 if inp:
-    # Add and display user message
+    # display user message
     st.session_state.messages.append({"role": "user", "content": inp})
     with st.chat_message("user"):
         st.markdown(inp)
 
-    # Run LLM response with spinner
+    #  LLM response
     with st.spinner("Thinking..."):
         # Invoke the conversational chain with the correct input key "question"
         answerr = st.session_state.ret_chain.invoke({"question": inp})
         response = answerr["answer"]
         response = re.sub(r"<think>.*?</think>\s*", "", response, flags=re.DOTALL).strip()
 
-    # Show assistant message
+    # ai message
     with st.chat_message("AI"):
         st.markdown(response)
     st.session_state.messages.append({"role": "AI", "content": response})
