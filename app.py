@@ -19,7 +19,8 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain_community.vectorstores import FAISS
 embeddings = OllamaEmbeddings(model='mxbai-embed-large')
 chromaa = FAISS.load_local('VectorDB', embeddings,allow_dangerous_deserialization=True)
-llm = Ollama(model="qwen2.5-coder")
+groq_api_key=os.getenv("GROQ_API_KEY")
+llm=ChatGroq(model="Gemma2-9b-It",groq_api_key=groq_api_key)
 
 #prompt using {question} to match ConversationalRetrievalChain
 prompt = ChatPromptTemplate.from_messages([
