@@ -21,7 +21,7 @@ embeddings = HuggingFaceInferenceAPIEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2",
     api_key=os.getenv("HUGGING_FACE")
 )
-retriever = FAISS.load_local('VectorDB/faiss_ollama', embeddings, allow_dangerous_deserialization=True).as_retriever()
+retriever = FAISS.load_local('VectorDB', embeddings, allow_dangerous_deserialization=True).as_retriever()
 
 # 💬 Model
 llm = ChatGroq(model="gemma2-9b-it", groq_api_key=os.getenv("GROQ_API_KEY"))
