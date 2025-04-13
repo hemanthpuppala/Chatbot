@@ -154,6 +154,6 @@ if user_input:
         answer = re.sub(r"<think>.*?</think>", "", answer).strip()
         st.markdown(answer)
         st.session_state.messages.append({"role": "AI", "content": answer})
-    st.markdown("**Chat Memory Log**")
-    for msg in chat_history(SESSION_ID).messages:
-        st.markdown(f"- **{msg.type.upper()}**: {msg.content}")
+    # st.markdown("**Chat Memory Log**")
+    # for msg in chat_history(SESSION_ID).messages:
+    #     st.markdown(f"- **{msg.type.upper()}**: {msg.content}")
