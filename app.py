@@ -1,105 +1,159 @@
 import streamlit as st
-from langchain_community.document_loaders import  TextLoader, PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceInferenceAPIEmbeddings
-from langchain_groq import ChatGroq
-#from langchain_chroma import Chroma
-from langchain.llms import Ollama
 import os
-import re
 from dotenv import load_dotenv
-load_dotenv()
-os.environ['LANGSMITH_API_KEY'] = os.getenv('LANGSMITH_API_KEY')
-os.environ['LANGSMITH_PROJECT'] = os.getenv('LANGSMITH_PROJECT')
-os.environ['LANGSMITH_TRACING'] = "true"
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.chains import create_retrieval_chain
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import ConversationalRetrievalChain
+import re
+
 from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
+from langchain_groq import ChatGroq
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_core.runnables import RunnableMap, RunnableLambda
+from langchain_core.messages import trim_messages
+
+# 🌱 Load .env
+load_dotenv()
+
+# 🧠 Embeddings + Retriever
 embeddings = HuggingFaceInferenceAPIEmbeddings(
-	model_name="sentence-transformers/all-MiniLM-L6-v2",
-	api_key=os.getenv("HUGGING_FACE")  
+    model_name="sentence-transformers/all-MiniLM-L6-v2",
+    api_key=os.getenv("HUGGING_FACE")
 )
-chromaa = FAISS.load_local('VectorDB', embeddings,allow_dangerous_deserialization=True)
-groq_api_key=os.getenv("GROQ_API_KEY")
-llm=ChatGroq(model="gemma2-9b-it",groq_api_key=groq_api_key)
+retriever = FAISS.load_local('VectorDB/faiss_ollama', embeddings, allow_dangerous_deserialization=True).as_retriever()
 
-#prompt using {question} to match ConversationalRetrievalChain
+# 💬 Model
+llm = ChatGroq(model="gemma2-9b-it", groq_api_key=os.getenv("GROQ_API_KEY"))
+
+# 🔁 Chat memory store
+if "store" not in st.session_state:
+    st.session_state.store = {}
+
+def chat_history(session_id: str) -> BaseChatMessageHistory:
+    if session_id not in st.session_state.store:
+        st.session_state.store[session_id] = ChatMessageHistory()
+    return st.session_state.store[session_id]
+
+# 📜 Prompt
 prompt = ChatPromptTemplate.from_messages([
-    (
-        "system",
-        """
+    ("system", """
 You are Hemanth Puppala's AI assistant — engineered by Hemanth himself. 
-You're here to help users with anything they need: answering questions, solving problems.
-
-Speak in a professional tone — like a helpful professional assistant.
-
-If the question is about Hemanth Puppala — his work, background, or anything personal/professional — respond **strictly using the context below**. Otherwise, feel free to respond naturally and conversationally.
-discourage redundant greetings, unless it's clearly the start of a conversation.
+You are a highly intelligent and capable assistant, but not perfect.
+Speak in a professional tone.
+If the question is about Hemanth Puppala, respond **only** with context below.
 <context>
 {context}
 </context>
-
-Be concise, clear, and witty where appropriate. You're allowed to have personality — just don't make stuff up.
-"""
-    ),
-    ("human", "{question}") 
+Be concise, clear, and don't make stuff up.
+    """),
+    MessagesPlaceholder(variable_name="chat_history"),
+    ("human", "{input}")
 ])
 
-# Initialize memory
-if "memory" not in st.session_state:
-    st.session_state.memory = ConversationBufferMemory(
-        memory_key="chat_history",
-        return_messages=True
+# 🔗 Prompt | Model
+core_chain = prompt | llm
+
+# 🧠 Memory wrapper
+with_memory = RunnableWithMessageHistory(
+    core_chain,
+    get_session_history=chat_history,
+    input_messages_key="input",
+    history_messages_key="chat_history"
+)
+
+# 📚 Retrieval + memory injection
+retrieval_chain = RunnableMap({
+    "input": lambda x: x["input"],
+    "context": lambda x: retriever.invoke(x["input"]),
+    "session_id": lambda x: x["session_id"]
+})
+
+inject_memory = RunnableLambda(
+    lambda inputs: {
+        **inputs,
+        "chat_history": trim_messages(
+            chat_history(inputs["session_id"]).messages,
+            max_tokens=1000,
+            token_counter = llm
+        )
+    }
+)
+
+# 🔁 Full chain
+full_chain = retrieval_chain | inject_memory | with_memory
+
+# 🧠 Session ID (could be user ID)
+
+# 🚀 Streamlit UI
+st.title("🧠 Hemanth's AI Assistant")
+if "chat_sessions" not in st.session_state:
+    st.session_state.chat_sessions = ["chat1"]
+if "current_chat" not in st.session_state:
+    st.session_state.current_chat = "chat1"
+
+with st.sidebar:
+    st.title("🧠 Chat Sessions")
+
+    # Add new chat session
+    if st.button("➕ New Chat"):
+        new_chat_id = f"chat{len(st.session_state.chat_sessions) + 1}"
+        st.session_state.chat_sessions.append(new_chat_id)
+        st.session_state.current_chat = new_chat_id
+        st.rerun()  # reload to reflect change
+
+    # Select existing chat
+    selected = st.radio(
+        "Select a chat",
+        st.session_state.chat_sessions,
+        index=st.session_state.chat_sessions.index(st.session_state.current_chat)
     )
 
-# retriever
-retriever = chromaa.as_retriever()
+    # Update current session ID
+    st.session_state.current_chat = selected
+SESSION_ID = st.session_state.current_chat
 
-# conversational retrieval chain with memory
-from langchain.chains import ConversationalRetrievalChain
 
-# conversational chain with memory
-if "ret_chain" not in st.session_state:
-    st.session_state.ret_chain = ConversationalRetrievalChain.from_llm(
-        llm=llm,
-        retriever=retriever,
-        memory=st.session_state.memory,
-        combine_docs_chain_kwargs={"prompt": prompt},  
-    )
-print(st.session_state.ret_chain.input_keys)
-
-# Streamlit UI
-st.title("🧠 Test Chat with LLM")
-
-# Initialize message history
 if "messages" not in st.session_state:
     st.session_state.messages = []
+if "store" not in st.session_state:
+    st.session_state.store = {}
 
-# Display previous messages
+if SESSION_ID not in st.session_state.store:
+    st.session_state.store[SESSION_ID] = ChatMessageHistory()
+
+history = st.session_state.store[SESSION_ID].messages
+
+# Sync display messages
+st.session_state.messages = [
+    {"role": "user" if m.type == "human" else "AI", "content": m.content}
+    for m in history
+]
+
+# Display chat history
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-#  input
-inp = st.chat_input("Enter your message...")
 
-if inp:
-    # display user message
-    st.session_state.messages.append({"role": "user", "content": inp})
+# User input box
+user_input = st.chat_input("Ask me anything...")
+
+if user_input:
+    # Show user message
+    st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user"):
-        st.markdown(inp)
+        st.markdown(user_input)
 
-    #  LLM response
-    with st.spinner("Thinking..."):
-        # Invoke the conversational chain with the correct input key "question"
-        answerr = st.session_state.ret_chain.invoke({"question": inp})
-        response = answerr["answer"]
-        response = re.sub(r"<think>.*?</think>\s*", "", response, flags=re.DOTALL).strip()
-
-    # ai message
-    with st.chat_message("AI"):
-        st.markdown(response)
-    st.session_state.messages.append({"role": "AI", "content": response})
+    with st.chat_message("AI"), st.spinner("Thinking..."):
+        result = full_chain.invoke(
+            {"input": user_input, "session_id": SESSION_ID},
+            config={"configurable": {"session_id": SESSION_ID}}
+        )
+        answer = result.content if hasattr(result, "content") else str(result)
+        answer = re.sub(r"<think>.*?</think>", "", answer).strip()
+        st.markdown(answer)
+        st.session_state.messages.append({"role": "AI", "content": answer})
+    st.markdown("**Chat Memory Log**")
+    for msg in chat_history(SESSION_ID).messages:
+        st.markdown(f"- **{msg.type.upper()}**: {msg.content}")
