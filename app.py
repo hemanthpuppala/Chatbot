@@ -24,7 +24,7 @@ embeddings = HuggingFaceInferenceAPIEmbeddings(
 )
 chromaa = FAISS.load_local('VectorDB', embeddings,allow_dangerous_deserialization=True)
 groq_api_key=os.getenv("GROQ_API_KEY")
-llm=ChatGroq(model="qwen-2.5-coder-32b",groq_api_key=groq_api_key)
+llm=ChatGroq(model="llama-3.2-90b-vision-preview",groq_api_key=groq_api_key)
 
 #prompt using {question} to match ConversationalRetrievalChain
 prompt = ChatPromptTemplate.from_messages([
