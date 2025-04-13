@@ -1,7 +1,7 @@
 import streamlit as st
 from langchain_community.document_loaders import  TextLoader, PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import OllamaEmbeddings
+from langchain.embeddings import HuggingFaceInferenceAPIEmbeddings
 from langchain_groq import ChatGroq
 #from langchain_chroma import Chroma
 from langchain.llms import Ollama
@@ -18,7 +18,10 @@ from langchain.chains import create_retrieval_chain
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from langchain_community.vectorstores import FAISS
-embeddings = OllamaEmbeddings(model='mxbai-embed-large')
+embeddings = HuggingFaceInferenceAPIEmbeddings(
+	model_name="sentence-transformers/all-MiniLM-L6-v2",
+	api_key=os.getenv("HUGGING_FACE")  
+)
 chromaa = FAISS.load_local('VectorDB', embeddings,allow_dangerous_deserialization=True)
 groq_api_key=os.getenv("GROQ_API_KEY")
 llm=ChatGroq(model="Gemma2-9b-It",groq_api_key=groq_api_key)
