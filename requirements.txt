@@ -12,3 +12,7 @@ langchain_huggingface
 faiss-cpu
 langchain_chroma
 langchain_google_genai
+langchain_groq
+langchain_core
+langserve
+sse_starlette
