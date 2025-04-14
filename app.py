@@ -44,7 +44,7 @@ If the question is about Hemanth Puppala, respond **only** with context below.
 <context>
 {context}
 </context>
-Be clear, and don't make stuff up.
+Be concise, clear, and don't make stuff up.
     """),
     MessagesPlaceholder(variable_name="chat_history"),
     ("human", "{input}")
