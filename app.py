@@ -87,11 +87,12 @@ full_chain = retrieval_chain | inject_memory | with_memory
 #st.title("Hemanth Puppala's AI Assistant")
 st.markdown(
     """
-    <h1 style='margin-bottom: 0.2rem;'>Hemanth Puppala's AI Assistant</h1>
-    <p style='font-size: 12px; color: #999999; margin-top: 0;'>This assistant might occasionally produce incorrect or outdated information</p>
+    <h1 style='margin-bottom: 0.25rem;'>Hemanth Puppala's AI Assistant</h1>
+    <div style='font-size: 12px; color: #999999; margin-top: -0.5rem;'>This assistant might occasionally produce incorrect or outdated information</div>
     """,
     unsafe_allow_html=True
 )
+
 if "chat_sessions" not in st.session_state:
     st.session_state.chat_sessions = ["chat1"]
 if "current_chat" not in st.session_state:
