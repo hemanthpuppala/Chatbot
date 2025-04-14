@@ -102,7 +102,7 @@ st.markdown(
 )
 
 if "chat_sessions" not in st.session_state:
-    st.session_state.chat_sessions = ["chat1"]
+    st.session_state.chat_sessions = ["Chat ID - 1"]
 if "current_chat" not in st.session_state:
     st.session_state.current_chat = "Chat ID - 1"
 
