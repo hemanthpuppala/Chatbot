@@ -156,23 +156,23 @@ if user_input:
     # st.markdown("**Chat Memory Log**")
     # for msg in chat_history(SESSION_ID).messages:
     #     st.markdown(f"- **{msg.type.upper()}**: {msg.content}")
-# add a light disclaimer at bottom left
-st.markdown(
-    """
-    <style>
-    .disclaimer {
-        position: fixed;
-        bottom: 10px;
-        left: 10px;
-        font-size: 12px;
-        color: #999999;
-        opacity: 0.8;
-    }
-    </style>
-    <div class="disclaimer">
-        This assistant might occasionally produce incorrect or outdated information
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+    # add a light disclaimer at bottom left
+    st.markdown(
+        """
+        <style>
+        .disclaimer {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            font-size: 12px;
+            color: #999999;
+            opacity: 0.8;
+        }
+        </style>
+        <div class="disclaimer">
+            This assistant might occasionally produce incorrect or outdated information
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
