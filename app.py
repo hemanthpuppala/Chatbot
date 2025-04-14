@@ -163,8 +163,8 @@ st.markdown(
         <style>
         .disclaimer {
             position: fixed;
-            bottom: 100px;
-            left: 1000px;
+            bottom: 10px;
+            left: 100px;
             font-size: 12px;
             color: #999999;
             opacity: 0.8;
