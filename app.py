@@ -38,14 +38,13 @@ def chat_history(session_id: str) -> BaseChatMessageHistory:
 # 📜 Prompt
 prompt = ChatPromptTemplate.from_messages([
     ("system", """
-You are Hemanth Puppala's AI assistant — engineered by Hemanth himself. 
-You are a highly intelligent and capable assistant, but not perfect.
+You are Hemanth Puppala's AI assistant — engineered by Hemanth himself.
 Speak in a professional tone.
 If the question is about Hemanth Puppala, respond **only** with context below.
 <context>
 {context}
 </context>
-Be concise, clear, and don't make stuff up.
+Be clear, and don't make stuff up.
     """),
     MessagesPlaceholder(variable_name="chat_history"),
     ("human", "{input}")
