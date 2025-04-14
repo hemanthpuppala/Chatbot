@@ -95,7 +95,7 @@ st.markdown(
             margin-bottom: 20px;
         }
     </style>
-    <h1 class='tight-title'>Hemanth Puppala's AI Assistant</h1>
+    <h1 class='tight-title'>Ask Hemanth...</h1>
     <div class='tight-disclaimer'>This assistant might occasionally produce incorrect or outdated information</div>
     """,
     unsafe_allow_html=True
