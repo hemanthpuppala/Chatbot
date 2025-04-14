@@ -110,6 +110,25 @@ with st.sidebar:
 
     # Update current session ID
     st.session_state.current_chat = selected
+    st.markdown(
+        """
+        <style>
+        .disclaimer {
+            position: fixed;
+            bottom: 10px;
+            left: 100px;
+            font-size: 12px;
+            color: #999999;
+            opacity: 0.8;
+        }
+        </style>
+        <div class="disclaimer">
+            This assistant might occasionally generate incorrect or outdated information
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 SESSION_ID = st.session_state.current_chat
 
 
@@ -158,21 +177,3 @@ if user_input:
     #     st.markdown(f"- **{msg.type.upper()}**: {msg.content}")
     # add a light disclaimer at bottom left
     
-st.markdown(
-        """
-        <style>
-        .disclaimer {
-            position: fixed;
-            bottom: 10px;
-            left: 100px;
-            font-size: 12px;
-            color: #999999;
-            opacity: 0.8;
-        }
-        </style>
-        <div class="disclaimer">
-            This assistant might occasionally generate incorrect or outdated information
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
