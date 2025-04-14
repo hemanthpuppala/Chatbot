@@ -85,14 +85,14 @@ full_chain = retrieval_chain | inject_memory | with_memory
 # 🧠 Session ID (could be user ID)
 
 # 🚀 Streamlit UI
-st.title("🧠 Hemanth's AI Assistant")
+st.title("Hemanth Puppala's AI Assistant")
 if "chat_sessions" not in st.session_state:
     st.session_state.chat_sessions = ["chat1"]
 if "current_chat" not in st.session_state:
     st.session_state.current_chat = "chat1"
 
 with st.sidebar:
-    st.title("🧠 Chat Sessions")
+    st.title("Chat Sessions")
 
     # Add new chat session
     if st.button("➕ New Chat"):
