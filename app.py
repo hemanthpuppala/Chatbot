@@ -86,6 +86,24 @@ full_chain = retrieval_chain | inject_memory | with_memory
 
 # 🚀 Streamlit UI
 st.title("Hemanth Puppala's AI Assistant")
+st.markdown(
+        """
+        <style>
+        .disclaimer {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            font-size: 12px;
+            color: #999999;
+            opacity: 0.8;
+        }
+        </style>
+        <div class="disclaimer">
+            This assistant might occasionally produce incorrect or outdated information
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 if "chat_sessions" not in st.session_state:
     st.session_state.chat_sessions = ["chat1"]
 if "current_chat" not in st.session_state:
@@ -157,22 +175,5 @@ if user_input:
     # for msg in chat_history(SESSION_ID).messages:
     #     st.markdown(f"- **{msg.type.upper()}**: {msg.content}")
     # add a light disclaimer at bottom left
-    st.markdown(
-        """
-        <style>
-        .disclaimer {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            font-size: 12px;
-            color: #999999;
-            opacity: 0.8;
-        }
-        </style>
-        <div class="disclaimer">
-            This assistant might occasionally produce incorrect or outdated information
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    
 
