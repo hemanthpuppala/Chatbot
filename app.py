@@ -109,7 +109,7 @@ if "current_chat" not in st.session_state:
 with st.sidebar:
     st.title("Chat Sessions")
     if st.button("➕ New Chat"):
-        new_chat_id = f"chat{len(st.session_state.chat_sessions) + 1}"
+        new_chat_id = f"Chat ID - {len(st.session_state.chat_sessions) + 1}"
         st.session_state.chat_sessions.append(new_chat_id)
         st.session_state.current_chat = new_chat_id
         st.rerun()
