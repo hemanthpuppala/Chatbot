@@ -89,7 +89,7 @@ st.markdown(
         """
         <style>
         .disclaimer {
-            bottom: 10px;
+            bottom: 7px;
             font-size: 12px;
             color: #999999;
             opacity: 0.8;
