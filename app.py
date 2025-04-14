@@ -86,21 +86,9 @@ full_chain = retrieval_chain | inject_memory | with_memory
 # 🚀 Streamlit UI
 st.title("Hemanth Puppala's AI Assistant")
 st.markdown(
-        """
-        <style>
-        .disclaimer {
-            bottom: 7px;
-            font-size: 12px;
-            color: #999999;
-            opacity: 0.8;
-        }
-        </style>
-        <div class="disclaimer">
-            This assistant might occasionally generate incorrect or outdated information
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    "<span style='font-size: 12px; color: #999999;'>This assistant might occasionally produce incorrect or outdated information</span>",
+    unsafe_allow_html=True
+)
 if "chat_sessions" not in st.session_state:
     st.session_state.chat_sessions = ["chat1"]
 if "current_chat" not in st.session_state:
