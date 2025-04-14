@@ -84,9 +84,12 @@ full_chain = retrieval_chain | inject_memory | with_memory
 # 🧠 Session ID (could be user ID)
 
 # 🚀 Streamlit UI
-st.title("Hemanth Puppala's AI Assistant")
+#st.title("Hemanth Puppala's AI Assistant")
 st.markdown(
-    "<span style='font-size: 12px; color: #999999;'>This assistant might occasionally produce incorrect or outdated information</span>",
+    """
+    <h1 style='margin-bottom: 0.2rem;'>Hemanth Puppala's AI Assistant</h1>
+    <p style='font-size: 12px; color: #999999; margin-top: 0;'>This assistant might occasionally produce incorrect or outdated information</p>
+    """,
     unsafe_allow_html=True
 )
 if "chat_sessions" not in st.session_state:
