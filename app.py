@@ -73,7 +73,7 @@ inject_memory = RunnableLambda(
     lambda inputs: {
         **inputs,
         "chat_history": chat_history(inputs["session_id"]).messages
-            
+    }
         )
     }
 )
