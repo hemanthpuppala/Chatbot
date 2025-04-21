@@ -72,10 +72,8 @@ retrieval_chain = RunnableMap({
 inject_memory = RunnableLambda(
     lambda inputs: {
         **inputs,
-        "chat_history": trim_messages(
-            chat_history(inputs["session_id"]).messages,
-            max_tokens=1000,
-            token_counter=llm
+        "chat_history": chat_history(inputs["session_id"]).messages
+            
         )
     }
 )
