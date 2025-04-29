@@ -16,3 +16,5 @@ langchain_groq
 langchain_core
 langserve
 sse_starlette
+cohere 
+langchain-cohere
