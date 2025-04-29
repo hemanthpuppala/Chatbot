@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 import re
 
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
@@ -15,11 +14,14 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables import RunnableMap, RunnableLambda
 from langchain_core.messages import trim_messages
 
+from langchain_cohere import CohereEmbeddings
+
 load_dotenv()
 
-embeddings = HuggingFaceInferenceAPIEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2",
-    api_key=os.getenv("HUGGING_FACE")
+embeddings = CohereEmbeddings(
+    cohere_api_key=os.getenv("COHERE_API_KEY"),
+    model="embed-english-v3.0"  # the latest best embedding model
+    
 )
 
 retriever = FAISS.load_local(
