@@ -6,7 +6,7 @@ A conversational AI assistant with a web interface built using Python and Stream
 
 ## Demo
 
-👉 **[Try the chatbot live](https://chatbot-hemanthpuppala.streamlit.app/)**
+👉 **[Try the chatbot live](https://hemanthpuppala.onrender.com/)**
 
 ---
 
